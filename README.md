@@ -15,6 +15,10 @@ Pixiv-C 本身是一个使用了 Pixivic 接口的纯前端项目，但是由于
 
 如果你需要使用相关的API，可以克隆本项目自行部署代码在你的服务器上。
 
+## 特别感谢
+
+非常感谢[pixiv-api-client](https://github.com/alphasp/pixiv-api-client)给本项目提供的灵感。
+
 ## 许可证
 
 Apache 2.0
