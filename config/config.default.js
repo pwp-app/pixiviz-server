@@ -28,7 +28,7 @@ module.exports = () => {
         csrf: {
             enable: false,
         },
-        domainWhiteList: ['http://localhost:8000', 'https://codeslice.pwp.app'],
+        domainWhiteList: ['http://localhost:8000', 'https://pixivc.pwp.app'],
     };
 
     config.cors = {
