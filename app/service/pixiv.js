@@ -24,12 +24,12 @@ const DATA_CACHE_TIME = 1800;
 
 class PixivService extends Service {
     async getHeaders() {
-        if (!this.ctx.app.ACCESS_TOKEN) {
+        if (!this.ctx.app.auth) {
             await this.login();
         }
         return {
             ...HEADERS,
-            Authorization: `Bearer ${this.ctx.app.ACCESS_TOKEN}`,
+            Authorization: `Bearer ${this.ctx.app.auth.access_token}`,
         };
     }
     getSecretHeaders() {
@@ -46,13 +46,13 @@ class PixivService extends Service {
             params: data,
         });
     }
-    setToken(token) {
-        this.ctx.app.ACCESS_TOKEN = token;
+    setAuth(auth) {
+        this.ctx.app.auth = auth;
     }
     async login() {
-        const token = await this.service.redis.get('pixivc_auth_token');
-        if (token) {
-            this.setToken(token);
+        const auth_cached = await this.service.redis.get('pixivc_auth');
+        if (auth_cached) {
+            this.setAuth(auth_cached);
             return;
         }
         try {
@@ -73,8 +73,8 @@ class PixivService extends Service {
             );
             if (res.data && res.data.response) {
                 const auth = res.data.response;
-                this.service.redis.set('pixivc_auth_token', auth.access_token, auth.expires_in);
-                this.setToken(auth.access_token);
+                this.service.redis.set('pixivc_auth', JSON.stringify(auth), auth.expires_in);
+                this.setAuth(auth);
             } else {
                 throw 'Cannot login.';
             }
@@ -83,7 +83,7 @@ class PixivService extends Service {
         }
     }
     async refreshToken() {
-        if (!this.ctx.app.ACCESS_TOKEN) {
+        if (!this.ctx.app.auth) {
             await this.login();
             return;
         }
@@ -94,13 +94,13 @@ class PixivService extends Service {
                 get_secure_url: true,
                 include_policy: true,
                 grant_type: 'refresh_token',
-                refresh_token: this.ctx.app.ACCESS_TOKEN,
+                refresh_token: this.ctx.app.auth.refresh_token,
             }, {
                 headers: this.getSecretHeaders(),
             });
             if (res.data && res.data.response) {
                 const auth = res.data.response;
-                this.service.redis.set('pixivc_auth_token', auth.access_token, auth.expires_in);
+                this.service.redis.set('pixivc_auth', JSON.stringify(auth), auth.expires_in);
                 this.setToken(auth.access_token);
             } else {
                 throw 'Cannot refresh token.';
