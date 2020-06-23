@@ -7,4 +7,5 @@ const api_version = 'v1';
  */
 module.exports = app => {
     const { router, controller } = app;
+    router.get(`/${api_version}/illust/detail`, controller[api_version].illust.detail);
 };
