@@ -101,7 +101,7 @@ class PixivService extends Service {
             if (res.data && res.data.response) {
                 const auth = res.data.response;
                 this.service.redis.set('pixivc_auth', JSON.stringify(auth), auth.expires_in);
-                this.setToken(auth.access_token);
+                this.setAuth(auth);
             } else {
                 throw 'Cannot refresh token.';
             }

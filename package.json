@@ -1,6 +1,6 @@
 {
   "name": "pixivc-backend",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Backend of pixiv-c",
   "private": true,
   "egg": {
