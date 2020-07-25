@@ -20,7 +20,10 @@ const HEADERS = {
 };
 const filter = 'for_ios';
 
+// 30 mins
 const DATA_CACHE_TIME = 1800;
+// 6 hours
+const DATA_LONG_CACHE_TIME = 21600;
 
 class PixivService extends Service {
     async getHeaders() {
@@ -30,6 +33,11 @@ class PixivService extends Service {
         return {
             ...HEADERS,
             Authorization: `Bearer ${this.ctx.app.auth.access_token}`,
+        };
+    }
+    getNoAuthHeaders() {
+        return {
+            ...HEADERS,
         };
     }
     getSecretHeaders() {
@@ -43,6 +51,12 @@ class PixivService extends Service {
     async generalRequest(url, data) {
         return axios.get(BASE_URL + url, {
             headers: await this.getHeaders(),
+            params: data,
+        });
+    }
+    generalNoAuthRequest(url, data) {
+        return axios.get(BASE_URL + url, {
+            headers: this.getNoAuthHeaders(),
             params: data,
         });
     }
@@ -109,21 +123,58 @@ class PixivService extends Service {
             throw err.message;
         }
     }
-    // 插画详情
-    async illustDetail(id) {
-        const detail = await this.service.redis.get(`pixivc_illust_detail_${id}`);
-        if (detail) {
-            return detail;
+    // 通用方法
+    async fetchFromRemote(CACHE_KEY, url, params, long_cache = false) {
+        const data = await this.service.redis.get(CACHE_KEY);
+        if (data) {
+            return data;
         }
-        const res = await this.generalRequest('/v1/illust/detail', {
-            illust_id: id,
-            filter,
-        });
+        const res = await this.generalRequest(url, params);
         if (res.data) {
-            this.service.redis.set(`pixivc_illust_detail_${id}`, res.data, DATA_CACHE_TIME);
+            this.service.redis.set(CACHE_KEY, res.data, long_cache ? DATA_LONG_CACHE_TIME : DATA_CACHE_TIME);
             return res.data;
         }
         return null;
+    }
+    // 搜索
+    async searchIllust(word, page) {
+        const offset = (page - 1) * 30;
+        const CACHE_KEY = `pixiviz_rank_${word}_${page}`;
+        return await this.fetchFromRemote(CACHE_KEY, '/v1/search/illust', {
+            word,
+            search_target: 'partial_match_for_tags',
+            offset,
+            filter,
+        });
+    }
+    // 排行榜
+    async illustRank(mode, date, page) {
+        const offset = (page - 1) * 30;
+        const CACHE_KEY = `pixiviz_rank_${mode}_${date}_${page}`;
+        return await this.fetchFromRemote(CACHE_KEY, '/v1/illust/ranking', {
+            mode,
+            date,
+            offset,
+            filter,
+        }, true);
+    }
+    // 插画详情
+    async illustDetail(id) {
+        const CACHE_KEY = `pixiviz_illust_detail_${id}`;
+        return await this.fetchFromRemote(CACHE_KEY, '/v1/illust/detail', {
+            illust_id: id,
+            filter,
+        });
+    }
+    // 插画关联
+    async illustRelated(id, page) {
+        const offset = (page - 1) * 30;
+        const CACHE_KEY = `pixiviz_illust_related_${id}_${page}`;
+        return await this.fetchFromRemote(CACHE_KEY, '/v2/illust/related', {
+            illust_id: id,
+            offset,
+            filter,
+        });
     }
 }
 

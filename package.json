@@ -1,7 +1,7 @@
 {
-  "name": "pixivc-backend",
-  "version": "1.0.1",
-  "description": "Backend of pixiv-c",
+  "name": "pixiviz-backend",
+  "version": "1.1.0",
+  "description": "Backend of Pixiviz",
   "private": true,
   "egg": {
     "declarations": true
