@@ -1,9 +1,9 @@
 <div align="center"><img width="100" src="https://img.backrunner.top/pixiv-c/logo.png"></div>
-<h1 align="center">Pixiv C</h1>
+<h1 align="center">Pixiviz</h1>
 
 ## 概述
 
-Pixiviz 本身是一个使用了 Pixivic 接口的纯前端项目，但是由于他们的接口近期在一些功能上做了权限，加上站点PV/UV也有增长，为了维系站点的运作，这个后端项目就这么诞生了。
+Pixiviz 本身是一个使用了 Pixivic 接口的纯前端项目，但是由于他们的接口在一些功能上做了权限，加上站点PV/UV也有增长，为了维系站点的运作，这个后端项目就这么诞生了。
 
 我会逐渐把项目的API进行切割，逐渐对接到这边。
 
