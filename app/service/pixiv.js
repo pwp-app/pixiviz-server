@@ -189,13 +189,17 @@ class PixivService extends Service {
   async userDetail(id) {
     const CACHE_KEY = `pixiviz_user_detail_${id}`;
     return await this.fetchFromRemote(CACHE_KEY, '/v1/user/detail', {
-      id,
+      user_id: id,
+      filter,
     });
   }
-  async userIllusts(id) {
+  async userIllusts(id, page) {
+    const offset = (page - 1) * 30;
     const CACHE_KEY = `pixiviz_user_illusts_${id}`;
     return await this.fetchFromRemote(CACHE_KEY, '/v1/user/illusts', {
-      id,
+      user_id: id,
+      offset,
+      filter,
     });
   }
 }

@@ -11,8 +11,8 @@ class UserController extends Controller {
   }
   async illusts() {
     const { ctx } = this;
-    ctx.validate({ id: 'number' }, ctx.query);
-    return Response(ctx, await this.service.pixiv.userIllusts(ctx.query.id));
+    ctx.validate({ id: 'number', page: 'number' }, ctx.query);
+    return Response(ctx, await this.service.pixiv.userIllusts(ctx.query.id, ctx.query.page));
   }
 }
 
