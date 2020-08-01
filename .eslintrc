@@ -1,7 +1,7 @@
 {
   "extends": "eslint-config-egg",
   "rules": {
-    "indent": ["error", 4],
+    "indent": ["error", 2],
     "array-bracket-spacing": "off",
     "eol-last": "off"
   }
