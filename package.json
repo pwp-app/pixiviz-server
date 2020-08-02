@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "axios": "^0.19.2",
-    "egg": "^2.15.1",
+    "egg": "^2.27.0",
     "egg-cors": "^2.2.3",
     "egg-redis": "^2.4.0",
     "egg-scripts": "^2.11.0",
@@ -21,10 +21,10 @@
   "devDependencies": {
     "autod": "^3.0.1",
     "autod-egg": "^1.1.0",
-    "egg-bin": "^4.11.0",
+    "egg-bin": "^4.15.0",
     "egg-ci": "^1.11.0",
     "egg-mock": "^4.0.0",
-    "eslint": "^7.3.0",
+    "eslint": "^7.6.0",
     "eslint-config-egg": "^8.0.1"
   },
   "engines": {
