@@ -11,6 +11,7 @@ module.exports = app => {
 
   const illust = controller[api_version].illust;
   const user = controller[api_version].user;
+  const search = controller[api_version].search;
 
   router.get(getRoute('illust/search'), illust.search);
   router.get(getRoute('illust/rank'), illust.rank);
@@ -19,4 +20,6 @@ module.exports = app => {
 
   router.get(getRoute('user/detail'), user.detail);
   router.get(getRoute('user/illusts'), user.illusts);
+
+  router.get(getRoute('search/suggestions'), search.suggestions);
 };

@@ -202,6 +202,24 @@ class PixivService extends Service {
       filter,
     });
   }
+  async searchSuggestions(keyword) {
+    const CACHE_KEY = `pixiviz_suggestions_${keyword}`;
+    const data = await this.service.redis.get(CACHE_KEY);
+    if (data) {
+      return data;
+    }
+    try {
+      const res = await axios.get(`https://www.pixiv.net/ajax/search/artworks/${keyword}?lang=zh-CN`);
+      if (!res || !res.data) {
+        return null;
+      }
+      const tags = res.data.body.relatedTags;
+      this.service.redis.set(CACHE_KEY, tags, DATA_LONG_CACHE_TIME);
+      return tags;
+    } catch (err) {
+      throw err.message;
+    }
+  }
 }
 
 module.exports = PixivService;
