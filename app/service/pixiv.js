@@ -20,10 +20,10 @@ const HEADERS = {
 };
 const filter = 'for_ios';
 
-// 30 mins
-const DATA_CACHE_TIME = 1800;
-// 6 hours
-const DATA_LONG_CACHE_TIME = 21600;
+// 60 mins
+const DATA_CACHE_TIME = 3600;
+// 12 hours
+const DATA_LONG_CACHE_TIME = 43200;
 
 class PixivService extends Service {
   async getHeaders() {
@@ -183,7 +183,7 @@ class PixivService extends Service {
       illust_id: id,
       offset,
       filter,
-    });
+    }, true);
   }
   // 用户信息
   async userDetail(id) {
