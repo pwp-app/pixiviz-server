@@ -14,9 +14,6 @@ const HASH_SECRET = '28c1fdd170a5204386cb1313c7077b34f83e4aaf4aa829ce78c231e05b0
 const HEADERS = {
   'App-OS': 'ios',
   'Accept-Language': 'en-us',
-  'App-OS-Version': '12.2',
-  'App-Version': '7.6.2',
-  'User-Agent': 'PixivIOSApp/7.6.2 (iOS 12.2; iPhone8,2)',
 };
 const filter = 'for_ios';
 
@@ -24,6 +21,10 @@ const filter = 'for_ios';
 const DATA_CACHE_TIME = 3600;
 // 12 hours
 const DATA_LONG_CACHE_TIME = 43200;
+
+const getRandomInt = max => {
+  return Math.floor(Math.random() * Math.floor(max));
+};
 
 class PixivService extends Service {
   async getHeaders() {
@@ -42,8 +43,16 @@ class PixivService extends Service {
   }
   getSecretHeaders() {
     const datetime = moment().format();
+    const version_1 = getRandomInt(3);
+    const version_2 = getRandomInt(3);
+    const version_3 = getRandomInt(2);
+    const version = `8.${version_1}.${version_2}`;
+
     return {
       ...HEADERS,
+      'App-OS-Version': `13.${version_3}`,
+      'App-Version': version,
+      'User-Agent': `PixivIOSApp/${version} (iOS 13.${version_3}; iPhone11,2)`,
       'X-Client-Time': datetime,
       'X-Client-Hash': Hash.md5(`${datetime}${HASH_SECRET}`),
     };
