@@ -73,7 +73,7 @@ module.exports = () => {
   };
 
   // add your middleware config here
-  config.middleware = ['notfoundHandler', 'compress'];
+  config.middleware = ['sensitiveWordLoader', 'notFoundHandler', 'compress'];
 
   config.compress = {
     threshold: 2048,
