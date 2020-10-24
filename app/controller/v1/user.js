@@ -1,7 +1,7 @@
 'use strict';
 
 const Controller = require('egg').Controller;
-const Response = require('../../utils/simple_response');
+const Response = require('../../utils/simpleResponse');
 
 class UserController extends Controller {
   async detail() {

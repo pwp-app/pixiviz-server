@@ -1,13 +1,23 @@
 'use strict';
 
 const Controller = require('egg').Controller;
-const Response = require('../../utils/simple_response');
+const Response = require('../../utils/simpleResponse');
 
 class IillustController extends Controller {
   async search() {
     const { ctx } = this;
     ctx.validate({ word: 'string', page: 'number' }, ctx.query);
-    return Response(ctx, await this.service.pixiv.searchIllust(ctx.query.word, ctx.query.page));
+
+    const keyword = ctx.query.word.trim();
+    // 敏感词检查
+    if (ctx.sensitiveWords.includes(keyword)) {
+      return Response(ctx, {
+        sensitive: true,
+        message: 'Sentitive word detected, searching has been blocked.',
+      });
+    }
+
+    return Response(ctx, await this.service.pixiv.searchIllust(keyword, ctx.query.page));
   }
   async rank() {
     const { ctx } = this;
