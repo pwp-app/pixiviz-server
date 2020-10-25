@@ -31,9 +31,20 @@ class PixivService extends Service {
     if (!this.ctx.app.auth) {
       await this.login();
     }
+
     return {
       ...HEADERS,
+      ...this.getVersionHeaders(),
       Authorization: `Bearer ${this.ctx.app.auth.access_token}`,
+    };
+  }
+  getVersionHeaders() {
+    const ios_version = getRandomInt(2);
+    const version = '7.9.5';
+    return {
+      'App-OS-Version': `13.${ios_version}`,
+      'App-Version': version,
+      'User-Agent': `PixivIOSApp/${version} (iOS 13.2; iPhone12,1)`,
     };
   }
   getNoAuthHeaders() {
@@ -43,16 +54,10 @@ class PixivService extends Service {
   }
   getSecretHeaders() {
     const datetime = moment().format();
-    const version_1 = getRandomInt(3);
-    const version_2 = getRandomInt(3);
-    const version_3 = getRandomInt(2);
-    const version = `8.${version_1}.${version_2}`;
 
     return {
       ...HEADERS,
-      'App-OS-Version': `13.${version_3}`,
-      'App-Version': version,
-      'User-Agent': `PixivIOSApp/${version} (iOS 13.${version_3}; iPhone11,2)`,
+      ...this.getVersionHeaders(),
       'X-Client-Time': datetime,
       'X-Client-Hash': Hash.md5(`${datetime}${HASH_SECRET}`),
     };
@@ -70,10 +75,11 @@ class PixivService extends Service {
     });
   }
   setAuth(auth) {
+    console.log(auth);
     this.ctx.app.auth = auth;
   }
   async login() {
-    const auth_cached = await this.service.redis.get('pixivc_auth');
+    const auth_cached = await this.service.redis.get('pixiviz_auth');
     if (auth_cached) {
       this.setAuth(auth_cached);
       return;
@@ -94,9 +100,10 @@ class PixivService extends Service {
           headers: this.getSecretHeaders(),
         }
       );
+      console.log(res);
       if (res.data && res.data.response) {
         const auth = res.data.response;
-        this.service.redis.set('pixivc_auth', JSON.stringify(auth), auth.expires_in);
+        this.service.redis.set('pixiviz_auth', JSON.stringify(auth), auth.expires_in);
         this.setAuth(auth);
       } else {
         throw 'Cannot login.';
@@ -127,7 +134,7 @@ class PixivService extends Service {
       );
       if (res.data && res.data.response) {
         const auth = res.data.response;
-        this.service.redis.set('pixivc_auth', JSON.stringify(auth), auth.expires_in);
+        this.service.redis.set('pixiviz_auth', JSON.stringify(auth), auth.expires_in);
         this.setAuth(auth);
       } else {
         throw 'Cannot refresh token.';
