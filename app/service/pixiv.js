@@ -12,19 +12,14 @@ const CLIENT_ID = 'MOBrBDS8blbauoSck0ZfDbtuzpyT';
 const CLIENT_SECRET = 'lsACyCD94FhDUtGTXi3QzcFE2uU1hqtDaKeqrdwj';
 const HASH_SECRET = '28c1fdd170a5204386cb1313c7077b34f83e4aaf4aa829ce78c231e05b0bae2c';
 const HEADERS = {
-  'App-OS': 'ios',
+  'App-OS': 'android',
   'Accept-Language': 'en-us',
 };
-const filter = 'for_ios';
 
 // 60 mins
 const DATA_CACHE_TIME = 3600;
 // 12 hours
 const DATA_LONG_CACHE_TIME = 43200;
-
-const getRandomInt = max => {
-  return Math.floor(Math.random() * Math.floor(max));
-};
 
 class PixivService extends Service {
   async getHeaders() {
@@ -39,12 +34,13 @@ class PixivService extends Service {
     };
   }
   getVersionHeaders() {
-    const ios_version = getRandomInt(2);
-    const version = '7.9.5';
+    // const os_version_minor = getRandomInt(2);
+    const os_version = '10';
+    const version = '5.0.219';
     return {
-      'App-OS-Version': `13.${ios_version}`,
+      'App-OS-Version': os_version,
       'App-Version': version,
-      'User-Agent': `PixivIOSApp/${version} (iOS 13.2; iPhone12,1)`,
+      'User-Agent': `PixivAndroidApp/${version} (Android ${os_version}; Pixel 4)`,
     };
   }
   getNoAuthHeaders() {
@@ -75,7 +71,6 @@ class PixivService extends Service {
     });
   }
   setAuth(auth) {
-    console.log(auth);
     this.ctx.app.auth = auth;
   }
   async login() {
@@ -100,7 +95,6 @@ class PixivService extends Service {
           headers: this.getSecretHeaders(),
         }
       );
-      console.log(res);
       if (res.data && res.data.response) {
         const auth = res.data.response;
         this.service.redis.set('pixiviz_auth', JSON.stringify(auth), auth.expires_in);
@@ -164,7 +158,6 @@ class PixivService extends Service {
       word,
       search_target: 'title_and_caption',
       offset,
-      filter,
     });
   }
   // 排行榜
@@ -178,7 +171,6 @@ class PixivService extends Service {
         mode,
         date,
         offset,
-        filter,
       },
       true
     );
@@ -188,7 +180,6 @@ class PixivService extends Service {
     const CACHE_KEY = `pixiviz_illust_detail_${id}`;
     return await this.fetchFromRemote(CACHE_KEY, '/v1/illust/detail', {
       illust_id: id,
-      filter,
     });
   }
   // 插画关联
@@ -198,7 +189,6 @@ class PixivService extends Service {
     return await this.fetchFromRemote(CACHE_KEY, '/v2/illust/related', {
       illust_id: id,
       offset,
-      filter,
     }, true);
   }
   // 用户信息
@@ -206,7 +196,6 @@ class PixivService extends Service {
     const CACHE_KEY = `pixiviz_user_detail_${id}`;
     return await this.fetchFromRemote(CACHE_KEY, '/v1/user/detail', {
       user_id: id,
-      filter,
     });
   }
   async userIllusts(id, page) {
@@ -215,7 +204,6 @@ class PixivService extends Service {
     return await this.fetchFromRemote(CACHE_KEY, '/v1/user/illusts', {
       user_id: id,
       offset,
-      filter,
     });
   }
   async searchSuggestions(keyword) {
@@ -225,7 +213,12 @@ class PixivService extends Service {
       return data;
     }
     try {
-      const res = await axios.get(`https://www.pixiv.net/ajax/search/artworks/${keyword}?lang=zh-CN`);
+      const res = await axios.get(`https://www.pixiv.net/ajax/search/artworks/${keyword}?mode=all&lang=zh`, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4321.0 Safari/537.36 Edg/88.0.702.0',
+          Referer: 'https://www.pixiv.net/',
+        },
+      });
       if (!res || !res.data) {
         return null;
       }
