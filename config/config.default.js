@@ -28,7 +28,7 @@ module.exports = () => {
     csrf: {
       enable: false,
     },
-    domainWhiteList: ['http://localhost:8000', 'https://pixivc.pwp.app'],
+    domainWhiteList: ['http://localhost:8000', 'https://pixiviz.pwp.app'],
   };
 
   config.cors = {
@@ -43,23 +43,21 @@ module.exports = () => {
   config.onerror = {
     all: (err, ctx) => {
       if (ctx.status === 422) {
-        ctx.body = JSON.stringify({
+        ctx.body = {
           code: 422,
           status: 'error',
           message: 'Request validation failed.',
-        });
+        };
       } else {
-        ctx.body = JSON.stringify({
+        ctx.body = {
           code: 500,
           status: 'error',
           message: 'Unknown internal error occured.',
-        });
+        };
       }
-      // 统一视为正常回复，用code区分错误
       ctx.set({
         'Content-Type': 'application/json',
       });
-      ctx.status = 200;
     },
   };
 
@@ -81,7 +79,7 @@ module.exports = () => {
 
   // add your user config here
   const userConfig = {
-    appName: 'pixivc-server',
+    appName: 'pixiviz-server',
   };
 
   return {
