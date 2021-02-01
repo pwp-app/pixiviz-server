@@ -22,7 +22,7 @@ dir.forEach(file => {
 
 module.exports = () => {
   return async function sensitiveWordLoader(ctx, next) {
-    ctx.sensitiveWords = sensitiveWords;
+    ctx.sensitiveWords = new Set(sensitiveWords);
     await next();
   };
 };

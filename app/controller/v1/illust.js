@@ -10,7 +10,7 @@ class IillustController extends Controller {
 
     const keyword = ctx.query.word.trim();
     // 敏感词检查
-    if (ctx.sensitiveWords.includes(keyword)) {
+    if (ctx.sensitiveWords.has(keyword)) {
       return Response(ctx, {
         sensitive: true,
         message: 'Sentitive word detected, searching has been blocked.',
