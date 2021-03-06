@@ -14,7 +14,7 @@ module.exports = () => {
   config.cluster = {
     listen: {
       path: '',
-      port: 7702,
+      port: 25166,
       hostname: '0.0.0.0',
     },
   };
@@ -63,7 +63,7 @@ module.exports = () => {
 
   config.redis = {
     client: {
-      port: 6379,
+      port: 25152,
       host: '127.0.0.1',
       password: keys.redis,
       db: 2,

@@ -2,6 +2,8 @@
 
 const Service = require('egg').Service;
 const moment = require('moment');
+const path = require('path');
+const fs = require('fs');
 const Hash = require('../utils/hash');
 
 const keys = require('../../config/keys');
@@ -12,8 +14,7 @@ const CLIENT_ID = 'MOBrBDS8blbauoSck0ZfDbtuzpyT';
 const CLIENT_SECRET = 'lsACyCD94FhDUtGTXi3QzcFE2uU1hqtDaKeqrdwj';
 const HASH_SECRET = '28c1fdd170a5204386cb1313c7077b34f83e4aaf4aa829ce78c231e05b0bae2c';
 const HEADERS = {
-  'App-OS': 'android',
-  'Accept-Language': 'en-us',
+  'User-Agent': 'PixivAndroidApp/5.0.234 (Android 11; Pixel 5)',
 };
 
 // 60 mins
@@ -26,21 +27,9 @@ class PixivService extends Service {
     if (!this.ctx.app.auth) {
       await this.login();
     }
-
     return {
       ...HEADERS,
-      ...this.getVersionHeaders(),
       Authorization: `Bearer ${this.ctx.app.auth.access_token}`,
-    };
-  }
-  getVersionHeaders() {
-    // const os_version_minor = getRandomInt(2);
-    const os_version = '10';
-    const version = '5.0.234';
-    return {
-      'App-OS-Version': os_version,
-      'App-Version': version,
-      'User-Agent': `PixivAndroidApp/${version} (Android ${os_version}; Pixel 4)`,
     };
   }
   getNoAuthHeaders() {
@@ -50,10 +39,8 @@ class PixivService extends Service {
   }
   getSecretHeaders() {
     const datetime = moment().format();
-
     return {
       ...HEADERS,
-      ...this.getVersionHeaders(),
       'X-Client-Time': datetime,
       'X-Client-Hash': Hash.md5(`${datetime}${HASH_SECRET}`),
     };
@@ -74,67 +61,42 @@ class PixivService extends Service {
     this.ctx.app.auth = auth;
   }
   async login() {
-    const auth_cached = await this.service.redis.get('pixiviz_auth');
-    if (auth_cached) {
-      this.setAuth(auth_cached);
-      return;
+    const cached = await this.service.redis.get('pixiviz_auth');
+    if (cached) {
+      this.setAuth(cached);
     }
-    try {
-      const res = await axios.post(
-        'https://oauth.secure.pixiv.net/auth/token',
-        {
-          client_id: CLIENT_ID,
-          client_secret: CLIENT_SECRET,
-          get_secure_url: true,
-          include_policy: true,
-          grant_type: 'password',
-          username: keys.pixiv_username,
-          password: keys.pixiv_password,
-        },
-        {
-          headers: this.getSecretHeaders(),
-        }
-      );
-      if (res.data && res.data.response) {
-        const auth = res.data.response;
-        this.service.redis.set('pixiviz_auth', JSON.stringify(auth), auth.expires_in);
-        this.setAuth(auth);
-      } else {
-        throw 'Cannot login.';
-      }
-    } catch (err) {
-      throw err.message;
-    }
+    const token = keys.refreshToken;
+    await this.refreshToken(token);
   }
-  async refreshToken() {
-    if (!this.ctx.app.auth) {
-      await this.login();
-      return;
+  async refreshToken(token) {
+    const tokenFilePath = path.resolve(__dirname, '../../refreshToken');
+    let storedToken;
+    if (fs.existsSync(tokenFilePath)) {
+      storedToken = fs.readFileSync(tokenFilePath, { encoding: 'utf-8' });
     }
     try {
-      const res = await axios.post(
-        'https://oauth.secure.pixiv.net/auth/token',
-        {
-          client_id: CLIENT_ID,
-          client_secret: CLIENT_SECRET,
-          get_secure_url: true,
-          include_policy: true,
-          grant_type: 'refresh_token',
-          refresh_token: this.ctx.app.auth.refresh_token,
+      const res = await axios.post('https://oauth.secure.pixiv.net/auth/token', {
+        client_id: CLIENT_ID,
+        client_secret: CLIENT_SECRET,
+        get_secure_url: true,
+        include_policy: true,
+        grant_type: 'refresh_token',
+        refresh_token: storedToken ? storedToken : token || this.ctx.app.auth.refresh_token,
+      }, {
+        headers: {
+          ...this.getSecretHeaders(),
         },
-        {
-          headers: this.getSecretHeaders(),
-        }
-      );
+      });
       if (res.data && res.data.response) {
         const auth = res.data.response;
         this.service.redis.set('pixiviz_auth', JSON.stringify(auth), auth.expires_in);
+        fs.writeFileSync(tokenFilePath, auth.refresh_token, { encoding: 'utf-8' });
         this.setAuth(auth);
       } else {
         throw 'Cannot refresh token.';
       }
     } catch (err) {
-      throw err.message;
+      throw err;
     }
   }
   // 通用方法
@@ -186,10 +148,15 @@ class PixivService extends Service {
   async illustRelated(id, page) {
     const offset = (page - 1) * 30;
     const CACHE_KEY = `pixiviz_illust_related_${id}_${page}`;
-    return await this.fetchFromRemote(CACHE_KEY, '/v2/illust/related', {
-      illust_id: id,
-      offset,
-    }, true);
+    return await this.fetchFromRemote(
+      CACHE_KEY,
+      '/v2/illust/related',
+      {
+        illust_id: id,
+        offset,
+      },
+      true
+    );
   }
   // 用户信息
   async userDetail(id) {
