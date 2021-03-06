@@ -36,7 +36,7 @@ class PixivService extends Service {
   getVersionHeaders() {
     // const os_version_minor = getRandomInt(2);
     const os_version = '10';
-    const version = '5.0.219';
+    const version = '5.0.234';
     return {
       'App-OS-Version': os_version,
       'App-Version': version,
