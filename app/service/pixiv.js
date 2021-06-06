@@ -75,18 +75,22 @@ class PixivService extends Service {
       storedToken = fs.readFileSync(tokenFilePath, { encoding: 'utf-8' });
     }
     try {
-      const res = await axios.post('https://oauth.secure.pixiv.net/auth/token', {
-        client_id: CLIENT_ID,
-        client_secret: CLIENT_SECRET,
-        get_secure_url: true,
-        include_policy: true,
-        grant_type: 'refresh_token',
-        refresh_token: storedToken ? storedToken : token || this.ctx.app.auth.refresh_token,
-      }, {
-        headers: {
-          ...this.getSecretHeaders(),
+      const res = await axios.post(
+        'https://oauth.secure.pixiv.net/auth/token',
+        {
+          client_id: CLIENT_ID,
+          client_secret: CLIENT_SECRET,
+          get_secure_url: true,
+          include_policy: true,
+          grant_type: 'refresh_token',
+          refresh_token: storedToken ? storedToken : token || this.ctx.app.auth.refresh_token,
         },
-      });
+        {
+          headers: {
+            ...this.getSecretHeaders(),
+          },
+        }
+      );
       if (res.data && res.data.response) {
         const auth = res.data.response;
         this.service.redis.set('pixiviz_auth', JSON.stringify(auth), auth.expires_in);
@@ -157,6 +161,13 @@ class PixivService extends Service {
       },
       true
     );
+  }
+  // 动图数据
+  async ugoriaMeta(id) {
+    const CACHE_KEY = `pixiviz_illust_ugoria_${id}`;
+    return await this.fetchFromRemote(CACHE_KEY, '/v1/ugoira/metadata', {
+      illust_id: id,
+    });
   }
   // 用户信息
   async userDetail(id) {
