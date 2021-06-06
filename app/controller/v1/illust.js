@@ -3,7 +3,7 @@
 const Controller = require('egg').Controller;
 const Response = require('../../utils/simpleResponse');
 
-class IillustController extends Controller {
+class IllustController extends Controller {
   async search() {
     const { ctx } = this;
     ctx.validate({ word: 'string', page: 'number' }, ctx.query);
@@ -36,4 +36,4 @@ class IillustController extends Controller {
   }
 }
 
-module.exports = IillustController;
+module.exports = IllustController;
