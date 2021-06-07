@@ -163,8 +163,8 @@ class PixivService extends Service {
     );
   }
   // 动图数据
-  async ugoriaMeta(id) {
-    const CACHE_KEY = `pixiviz_illust_ugoria_${id}`;
+  async ugoiraMeta(id) {
+    const CACHE_KEY = `pixiviz_illust_ugoira_${id}`;
     return await this.fetchFromRemote(CACHE_KEY, '/v1/ugoira/metadata', {
       illust_id: id,
     });
