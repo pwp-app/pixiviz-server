@@ -1,6 +1,6 @@
 {
   "name": "pixiviz-backend",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "description": "Backend of Pixiviz",
   "private": true,
   "egg": {
