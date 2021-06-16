@@ -23,7 +23,7 @@ class IllustController extends Controller {
     const { ctx } = this;
     ctx.validate({ mode: 'string', date: 'date', page: 'number' }, ctx.query);
     const res = await this.service.pixiv.illustRank(ctx.query.mode, ctx.query.date, ctx.query.page, ctx.query.pageSize);
-    if (!res.illusts || (Array.isArray(res.illusts) && !res.illusts.length && ctx.query.page === 1)) {
+    if (!res.illusts || (Array.isArray(res.illusts) && !res.illusts.length && ctx.query.page < 15)) {
       ctx.throw(500, 'Cannot get rank illusts.');
     }
     if (res.next_url) {
