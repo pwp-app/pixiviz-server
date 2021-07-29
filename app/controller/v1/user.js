@@ -14,6 +14,13 @@ class UserController extends Controller {
     ctx.validate({ id: 'number', page: 'number' }, ctx.query);
     return Response(ctx, await this.service.pixiv.userIllusts(ctx.query.id, ctx.query.page));
   }
+  async search() {
+    const { ctx } = this;
+    ctx.validate({ keyword: 'string', page: 'number' }, ctx.query);
+    const { keyword } = ctx.query;
+    const formattedKeyword = keyword.trim();
+    return Response(ctx, await this.service.pixiv.searchUser(formattedKeyword));
+  }
 }
 
 module.exports = UserController;

@@ -184,6 +184,14 @@ class PixivService extends Service {
       offset,
     });
   }
+  async searchUser(word, page) {
+    const offset = (page - 1) * 10;
+    const CACHE_KEY = `pixiviz_user_search_${word}_${page}`;
+    return await this.fetchFromRemote(CACHE_KEY, '/v1/search/user', {
+      word,
+      offset,
+    });
+  }
   async searchSuggestions(keyword) {
     const CACHE_KEY = `pixiviz_suggestions_${keyword}`;
     const data = await this.service.redis.get(CACHE_KEY);
