@@ -23,6 +23,7 @@ module.exports = app => {
 
   router.get(getRoute('user/detail'), user.detail);
   router.get(getRoute('user/illusts'), user.illusts);
+  router.get(getRoute('user/search'), user.search);
 
   router.get(getRoute('search/suggestions'), search.suggestions);
 };
