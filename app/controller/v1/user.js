@@ -17,9 +17,9 @@ class UserController extends Controller {
   async search() {
     const { ctx } = this;
     ctx.validate({ keyword: 'string', page: 'number' }, ctx.query);
-    const { keyword } = ctx.query;
+    const { keyword, page } = ctx.query;
     const formattedKeyword = keyword.trim();
-    return Response(ctx, await this.service.pixiv.searchUser(formattedKeyword));
+    return Response(ctx, await this.service.pixiv.searchUser(formattedKeyword, page));
   }
 }
 
