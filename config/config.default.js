@@ -70,6 +70,12 @@ module.exports = () => {
     },
   };
 
+  config.logrotator = {
+    maxFileSize: 100 * 1024 * 1024, // 100 MB
+    maxFiles: 10,
+    maxDays: 14,
+  };
+
   // add your middleware config here
   config.middleware = ['sensitiveWordLoader', 'notFoundHandler', 'compress'];
 

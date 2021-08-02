@@ -14,4 +14,8 @@ module.exports = {
     enable: true,
     package: 'egg-redis',
   },
+  logrotator: {
+    enable: true,
+    package: 'egg-logrotator',
+  },
 };
