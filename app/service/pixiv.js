@@ -6,7 +6,6 @@ const path = require('path');
 const fs = require('fs');
 const Hash = require('../utils/hash');
 
-const keys = require('../../config/keys');
 const axios = require('../utils/axios');
 
 const BASE_URL = 'https://app-api.pixiv.net';
@@ -61,11 +60,12 @@ class PixivService extends Service {
     this.ctx.app.auth = auth;
   }
   async login() {
+    const { ctx } = this;
     const cached = await this.service.redis.get('pixiviz_auth');
     if (cached) {
       this.setAuth(cached);
     }
-    const token = keys.refreshToken;
+    const token = ctx.app.config.refreshToken;
     await this.refreshToken(token);
   }
   async refreshToken(token) {
