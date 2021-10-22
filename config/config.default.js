@@ -2,8 +2,6 @@
 
 'use strict';
 
-const keys = require('./keys');
-
 module.exports = () => {
   /**
    * built-in config
@@ -14,12 +12,8 @@ module.exports = () => {
   config.cluster = {
     listen: {
       path: '',
-      port: 25166,
-      hostname: '0.0.0.0',
     },
   };
-
-  config.keys = keys.cookie;
 
   config.security = {
     xframe: {
@@ -58,15 +52,6 @@ module.exports = () => {
       ctx.set({
         'Content-Type': 'application/json',
       });
-    },
-  };
-
-  config.redis = {
-    client: {
-      port: 25152,
-      host: '127.0.0.1',
-      password: keys.redis,
-      db: 2,
     },
   };
 

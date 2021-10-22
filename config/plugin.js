@@ -2,6 +2,9 @@
 
 /** @type Egg.EggPlugin */
 module.exports = {
+  static: {
+    enable: false,
+  },
   cors: {
     enable: true,
     package: 'egg-cors',

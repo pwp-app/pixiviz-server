@@ -12,5 +12,5 @@ run/
 *.un~
 typings/
 .nyc_output/
-keys.js
+config/config.prod.js
 .history
