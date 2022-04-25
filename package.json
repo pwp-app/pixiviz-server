@@ -7,24 +7,24 @@
     "declarations": true
   },
   "dependencies": {
-    "axios": "^0.23.0",
-    "egg": "^2.31.0",
+    "axios": "^0.26.1",
+    "egg": "^2.35.0",
     "egg-cors": "^2.2.3",
     "egg-logrotator": "^3.1.0",
     "egg-redis": "^2.4.0",
-    "egg-scripts": "^2.15.1",
-    "egg-security": "^2.9.0",
+    "egg-scripts": "^2.16.0",
+    "egg-security": "^2.10.1",
     "egg-validate": "^2.0.2",
     "koa-compress": "^5.1.0",
-    "moment": "^2.29.1",
-    "qs": "^6.10.1"
+    "moment": "^2.29.3",
+    "qs": "^6.10.3"
   },
   "devDependencies": {
-    "autod": "^3.1.1",
+    "autod": "^3.1.2",
     "autod-egg": "^1.1.0",
-    "egg-bin": "^4.16.4",
+    "egg-bin": "^4.19.0",
     "egg-ci": "^1.19.0",
-    "egg-mock": "^4.1.0",
+    "egg-mock": "^4.2.0",
     "eslint": "^7.32.0",
     "eslint-config-egg": "^9.0.0"
   },
@@ -33,6 +33,7 @@
   },
   "scripts": {
     "start": "egg-scripts start --daemon --title=egg-server-pixivc-backend",
+    "start:prod": "EGG_SERVER_ENV=prod npm start",
     "stop": "egg-scripts stop --title=egg-server-pixivc-backend",
     "dev": "egg-bin dev",
     "debug": "egg-bin debug",
