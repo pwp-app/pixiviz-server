@@ -112,6 +112,31 @@ class PixivService extends Service {
     }
     const res = await this.generalRequest(url, params);
     if (res.data) {
+      // filter
+      if (res.data.illust) {
+        const tags = res.data.illust.tags.map(tagItem => tagItem.name);
+        const sensitive = tags.reduce((res, tag) => {
+          return res || this.ctx.sensitiveWords.has(tag);
+        }, false);
+        if (sensitive) {
+          res.data.illust.x_restrict = 1;
+        }
+        if (res.data.illust.x_restrict) {
+          delete res.data.illust.tags;
+          delete res.data.illust.meta_single_page;
+          delete res.data.illust.caption;
+          delete res.data.illust.user;
+        }
+        if (res.data.illusts) {
+          res.data.illusts.filter(img => {
+            const tags = img.tags.map(tagItem => tagItem.name);
+            const sensitive = tags.reduce((res, tag) => {
+              return res || this.ctx.sensitiveWords.has(tag);
+            }, false);
+            return !sensitive;
+          });
+        }
+      }
       this.service.redis.set(CACHE_KEY, res.data, long_cache ? DATA_LONG_CACHE_TIME : DATA_CACHE_TIME);
       return res.data;
     }

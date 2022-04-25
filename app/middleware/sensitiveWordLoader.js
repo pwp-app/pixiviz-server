@@ -15,14 +15,14 @@ dir.forEach(file => {
       encoding: 'utf-8',
     });
     if (words) {
-      sensitiveWords = sensitiveWords.concat(words.split('\r\n'));
+      sensitiveWords = sensitiveWords.concat(words.split('\n'));
     }
   }
 });
 
 module.exports = () => {
   return async function sensitiveWordLoader(ctx, next) {
-    ctx.sensitiveWords = new Set(sensitiveWords);
+    ctx.sensitiveWords = new Set(sensitiveWords.map(line => Buffer.from(line, 'base64').toString('utf-8').trim()));
     await next();
   };
 };
