@@ -64,6 +64,7 @@ class PixivService extends Service {
     const cached = await this.service.redis.get('pixiviz_auth');
     if (cached) {
       this.setAuth(cached);
+      return;
     }
     const token = ctx.app.config.refreshToken;
     await this.refreshToken(token);
@@ -83,7 +84,7 @@ class PixivService extends Service {
           get_secure_url: true,
           include_policy: true,
           grant_type: 'refresh_token',
-          refresh_token: storedToken ? storedToken : token || this.ctx.app.auth.refresh_token,
+          refresh_token: (storedToken ? storedToken : token) || this.ctx.app.auth.refresh_token,
         },
         {
           headers: {
@@ -91,7 +92,7 @@ class PixivService extends Service {
           },
         }
       );
-      if (res.data && res.data.response) {
+      if (res.data?.response) {
         const auth = res.data.response;
         this.service.redis.set('pixiviz_auth', JSON.stringify(auth), auth.expires_in);
         fs.writeFileSync(tokenFilePath, auth.refresh_token, { encoding: 'utf-8' });
