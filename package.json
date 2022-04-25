@@ -1,6 +1,6 @@
 {
   "name": "pixiviz-backend",
-  "version": "1.8.2",
+  "version": "1.8.3",
   "description": "Backend of Pixiviz",
   "private": true,
   "egg": {
@@ -37,6 +37,7 @@
     "stop": "egg-scripts stop --title=egg-server-pixivc-backend",
     "dev": "egg-bin dev",
     "debug": "egg-bin debug",
+    "gen:sensitive-dict": "node ./scripts/generateSensitiveDict.js",
     "test": "npm run lint -- --fix && npm run test-local",
     "test-local": "egg-bin test",
     "cov": "egg-bin cov",
