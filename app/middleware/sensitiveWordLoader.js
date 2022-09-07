@@ -22,7 +22,9 @@ dir.forEach(file => {
 
 module.exports = () => {
   return async function sensitiveWordLoader(ctx, next) {
-    ctx.sensitiveWords = new Set(sensitiveWords.map(line => Buffer.from(line, 'base64').toString('utf-8').trim()));
+    const sensitiveWordList = sensitiveWords.map(line => Buffer.from(line, 'base64').toString('utf-8').trim());
+    ctx.sensitiveWordList = sensitiveWordList;
+    ctx.sensitiveWords = new Set(sensitiveWordList);
     await next();
   };
 };

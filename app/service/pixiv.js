@@ -231,10 +231,10 @@ class PixivService extends Service {
           Referer: 'https://www.pixiv.net/',
         },
       });
-      if (!res || !res.data) {
+      if (!res?.data) {
         return null;
       }
-      const tags = res.data.body.relatedTags;
+      const tags = (res.data.body?.relatedTags || []).filter(tag => !this.ctx.sensitiveWords.includes(tag));
       this.service.redis.set(CACHE_KEY, tags, DATA_LONG_CACHE_TIME);
       return tags;
     } catch (err) {
