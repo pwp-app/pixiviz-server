@@ -15,6 +15,8 @@ git clone https://github.com/pwp-app/pixiviz-server.git
 
 cd pixiviz-server
 
+# 修改 docker-compose.yml 里的 redis 密码和暴露端口等
+
 mkdir redis
 
 # 确保 docker 有 redis 目录的权限
