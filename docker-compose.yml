@@ -21,7 +21,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - /home/pixiviz/config:/usr/src/app/config
+      - /home/pixiviz-server/config:/usr/src/app/config
     networks:
       - pixiviz-internal
     healthcheck:

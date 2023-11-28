@@ -7,6 +7,17 @@ Pixiviz 本身是一个使用了 Pixivic 接口的纯前端项目，但是由于
 
 我会逐渐把项目的API进行切割，逐渐对接到这边。
 
+## Docker 部署
+
+```bash
+cd /home
+git clone https://github.com/pwp-app/pixiviz-server.git
+
+cd pixiviz-server
+docker compose build
+docker compose up -d
+```
+
 ## 技术说明
 
 服务器基于 Node + Egg.js，封装的是 Pixiv iOS Client 的 API。
