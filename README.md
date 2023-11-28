@@ -14,6 +14,11 @@ cd /home
 git clone https://github.com/pwp-app/pixiviz-server.git
 
 cd pixiviz-server
+
+mkdir redis
+
+# 确保 docker 有 redis 目录的权限
+
 docker compose build
 docker compose up -d
 ```

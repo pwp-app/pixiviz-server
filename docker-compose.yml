@@ -20,6 +20,7 @@ services:
     build: .
     ports:
       - "3000:3000"
+    container_name: pixiviz-server
     volumes:
       - /home/pixiviz-server/config:/usr/src/app/config
     networks:
