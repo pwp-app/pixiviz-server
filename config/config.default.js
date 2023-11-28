@@ -15,6 +15,14 @@ module.exports = () => {
     },
   };
 
+  config.redis = {
+    client: {
+      port: 6379,
+      host: 'pixiviz-redis',
+      db: 1,
+    },
+  };
+
   config.security = {
     xframe: {
       value: 'SAMEORIGIN',

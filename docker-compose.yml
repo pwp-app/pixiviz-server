@@ -1,15 +1,36 @@
 version: '3.8'
 
 services:
+  pixiviz-redis:
+    restart: always
+    image: bitnami/redis:latest
+    container_name: pixiviz-redis
+    environment:
+      - REDIS_PASSWORD=password
+    networks:
+      - pixiviz-internal
+    volumes:
+      - ./redis:/bitnami/redis/data
+    healthcheck:
+      test: "redis-cli -a password ping"
+      interval: 5s
+      retries: 20
+
   pixiviz-server:
     build: .
     ports:
       - "3000:3000"
     volumes:
       - /home/pixiviz/config:/usr/src/app/config
+    networks:
+      - pixiviz-internal
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/ping"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
+
+networks:
+  pixiviz-internal:
+    internal: true
