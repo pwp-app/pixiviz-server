@@ -1,14 +1,14 @@
 version: '3.8'
 
 services:
-  app:
+  pixiviz-server:
     build: .
     ports:
       - "3000:3000"
     volumes:
       - /home/pixiviz/config:/usr/src/app/config
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      test: ["CMD", "curl", "-f", "http://localhost:3000/ping"]
       interval: 30s
       timeout: 10s
       retries: 3

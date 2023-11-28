@@ -23,6 +23,7 @@
   "devDependencies": {
     "autod": "^3.1.2",
     "autod-egg": "^1.1.0",
+    "cross-env": "^7.0.3",
     "egg-bin": "^4.20.0",
     "egg-ci": "^1.19.1",
     "egg-mock": "^4.2.1",
@@ -34,7 +35,8 @@
   },
   "scripts": {
     "start": "egg-scripts start --daemon --title=egg-server-pixivc-backend",
-    "start:prod": "EGG_SERVER_ENV=prod npm start",
+    "start:docker-prod": "cross-env EGG_SERVER_ENV=prod egg-scripts start",
+    "start:prod": "cross-env EGG_SERVER_ENV=prod npm start",
     "stop": "egg-scripts stop --title=egg-server-pixivc-backend",
     "dev": "egg-bin dev",
     "debug": "egg-bin debug",
