@@ -1,6 +1,6 @@
 {
   "name": "pixiviz-backend",
-  "version": "1.8.4",
+  "version": "1.9.0",
   "description": "Backend of Pixiviz",
   "private": true,
   "egg": {
@@ -8,16 +8,17 @@
   },
   "dependencies": {
     "axios": "^0.26.1",
-    "egg": "^2.36.0",
+    "egg": "^2.37.0",
     "egg-cors": "^2.2.3",
     "egg-logrotator": "^3.1.0",
-    "egg-redis": "^2.4.0",
+    "egg-redis": "^2.5.0",
     "egg-scripts": "^2.17.0",
     "egg-security": "^2.11.0",
     "egg-validate": "^2.0.2",
-    "koa-compress": "^5.1.0",
+    "koa-compress": "^5.1.1",
     "moment": "^2.29.4",
-    "qs": "^6.11.0"
+    "qs": "^6.11.2",
+    "sensitive-word-tool": "^1.1.9"
   },
   "devDependencies": {
     "autod": "^3.1.2",

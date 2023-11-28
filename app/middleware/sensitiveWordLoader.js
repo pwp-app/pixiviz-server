@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { SensitiveWordTool } = require('sensitive-word-tool');
 
 let sensitiveWords = [];
 
@@ -23,8 +24,11 @@ dir.forEach(file => {
 module.exports = () => {
   return async function sensitiveWordLoader(ctx, next) {
     const sensitiveWordList = sensitiveWords.map(line => Buffer.from(line, 'base64').toString('utf-8').trim());
-    ctx.sensitiveWordList = sensitiveWordList;
-    ctx.sensitiveWords = new Set(sensitiveWordList);
+    const detectTool = new SensitiveWordTool({
+      useDefaultWords: true,
+    });
+    detectTool.addWords(sensitiveWordList);
+    ctx.sensitiveWords = detectTool;
     await next();
   };
 };

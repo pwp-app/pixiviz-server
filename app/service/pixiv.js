@@ -116,7 +116,7 @@ class PixivService extends Service {
       if (res.data.illust) {
         const tags = res.data.illust.tags.map(tagItem => tagItem.name);
         const sensitive = tags.reduce((res, tag) => {
-          return res || this.ctx.sensitiveWords.has(tag);
+          return res || this.ctx.sensitiveWords.verify(tag);
         }, false);
         if (sensitive) {
           res.data.illust.x_restrict = 1;
@@ -131,7 +131,7 @@ class PixivService extends Service {
           res.data.illusts.filter(img => {
             const tags = img.tags.map(tagItem => tagItem.name);
             const sensitive = tags.reduce((res, tag) => {
-              return res || this.ctx.sensitiveWords.has(tag);
+              return res || this.ctx.sensitiveWords.verfify(tag);
             }, false);
             return !sensitive;
           });
@@ -234,7 +234,7 @@ class PixivService extends Service {
       if (!res?.data) {
         return null;
       }
-      const tags = (res.data.body?.relatedTags || []).filter(tag => !this.ctx.sensitiveWords.includes(tag));
+      const tags = (res.data.body?.relatedTags || []).filter(tag => !this.ctx.sensitiveWords.verify(tag));
       this.service.redis.set(CACHE_KEY, tags, DATA_LONG_CACHE_TIME);
       return tags;
     } catch (err) {
