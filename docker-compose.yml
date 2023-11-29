@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  pixiviz-redis:
+  redis:
     restart: always
     image: bitnami/redis:latest
     container_name: pixiviz-redis
@@ -16,11 +16,11 @@ services:
       interval: 5s
       retries: 20
 
-  pixiviz-server:
+  service:
     build: .
     ports:
       - "3000:3000"
-    container_name: pixiviz-server
+    container_name: pixiviz-api-service
     volumes:
       - ./config:/usr/src/app/config
       - ./refreshToken:/usr/src/app/refreshToken
