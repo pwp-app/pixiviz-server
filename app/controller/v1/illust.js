@@ -26,6 +26,9 @@ class IllustController extends Controller {
     if (!res.illusts || (Array.isArray(res.illusts) && !res.illusts.length && ctx.query.page < 15)) {
       ctx.throw(500, 'Cannot get rank illusts.');
     }
+    if (ctx.get('user-agent').includes('Emi/1.0')) {
+      res.illusts = JSON.parse(JSON.stringify(res.illusts).replace(/i\.pximg\.net/g, 'i.pixiv.re'));
+    }
     if (res.next_url) {
       delete res.next_url;
     }
