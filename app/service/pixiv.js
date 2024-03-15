@@ -110,31 +110,61 @@ class PixivService extends Service {
     if (data) {
       return data;
     }
+
     const res = await this.generalRequest(url, params);
+
     if (res.data) {
       // filter
       if (res.data.illust) {
         const tags = res.data.illust.tags.map(tagItem => tagItem.name);
-        const sensitive = tags.reduce((res, tag) => {
-          return res || this.ctx.sensitiveWords.verify(tag);
-        }, false);
+        const sensitive =
+          tags
+            .reduce((res, tag) => {
+              return res || this.ctx.sensitiveWords.verify(tag);
+            }, false)
+            || this.ctx.sensitiveWords.verify(res.data.illust.title)
+            || (res.data.illust.user?.name && this.ctx.sensitiveWords.verify(res.data.illust.user.name));
         if (sensitive) {
           res.data.illust.x_restrict = 1;
         }
         if (res.data.illust.x_restrict) {
+          delete res.data.illust.title;
+          delete res.data.caption;
           delete res.data.illust.tags;
           delete res.data.illust.meta_single_page;
           delete res.data.illust.caption;
           delete res.data.illust.user;
         }
-        if (res.data.illusts) {
+        if (Array.isArray(res.data.illusts)) {
           res.data.illusts.filter(img => {
             const tags = img.tags.map(tagItem => tagItem.name);
-            const sensitive = tags.reduce((res, tag) => {
-              return res || this.ctx.sensitiveWords.verify(tag);
-            }, false);
+            const sensitive =
+              tags
+                .reduce((res, tag) => {
+                  return res || this.ctx.sensitiveWords.verify(tag);
+                }, false)
+                || this.ctx.sensitiveWords.verify(img.title)
+                || (img.user?.name && this.ctx.sensitiveWords.verify(img.user.name));
             return !sensitive;
           });
+        }
+        if (Array.isArray(res.data.user_previews)) {
+          res.data.user_previews.filter(preview => {
+            const sensitive =
+              this.ctx.sensitiveWords.verify(preview.user.name)
+              || preview.illusts.reduce((res, curr) => {
+                return res
+                  && this.ctx.sensitiveWords.verify(curr.title)
+                  && this.ctx.sensitiveWords.verify(curr.tags.map(tag => tag.name).join(', '));
+              }, false);
+            return !sensitive;
+          });
+        }
+        if (res.data.user && res.data.profile) {
+          if (this.ctx.sensitiveWords.verify(res.data.user.name) && this.sensitiveWords.verify(res.data.user.comment)) {
+            this.service.redis.set(CACHE_KEY, null, long_cache ? DATA_LONG_CACHE_TIME : DATA_CACHE_TIME);
+            return null;
+          }
         }
       }
       this.service.redis.set(CACHE_KEY, res.data, long_cache ? DATA_LONG_CACHE_TIME : DATA_CACHE_TIME);
