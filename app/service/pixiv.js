@@ -131,7 +131,7 @@ class PixivService extends Service {
           res.data.illusts.filter(img => {
             const tags = img.tags.map(tagItem => tagItem.name);
             const sensitive = tags.reduce((res, tag) => {
-              return res || this.ctx.sensitiveWords.verfify(tag);
+              return res || this.ctx.sensitiveWords.verify(tag);
             }, false);
             return !sensitive;
           });
