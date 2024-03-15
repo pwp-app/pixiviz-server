@@ -224,6 +224,9 @@ class PixivService extends Service {
     if (data) {
       return data;
     }
+    if (this.ctx.sensitiveWords.verify(keyword)) {
+      return [];
+    }
     try {
       const res = await axios.get(`https://www.pixiv.net/ajax/search/artworks/${keyword}?mode=all&lang=zh`, {
         headers: {
