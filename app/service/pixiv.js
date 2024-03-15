@@ -123,6 +123,7 @@ class PixivService extends Service {
               return res || this.ctx.sensitiveWords.verify(tag);
             }, false)
             || this.ctx.sensitiveWords.verify(res.data.illust.title)
+            || this.ctx.sensitiveWords.verify(res.data.illust.caption)
             || (res.data.illust.user?.name && this.ctx.sensitiveWords.verify(res.data.illust.user.name));
         if (sensitive) {
           res.data.illust.x_restrict = 1;
