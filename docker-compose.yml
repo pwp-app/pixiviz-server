@@ -35,6 +35,7 @@ services:
       - ./refreshToken:/usr/local/pixiviz-api/refreshToken
       - ./logs:/usr/local/pixiviz-api/logs
     environment:
+      - REDIS_HOST=redis
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - PIXIV_TOKEN=${PIXIV_TOKEN}
       - SAFE_KEY=${SAFE_KEY}

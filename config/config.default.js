@@ -9,19 +9,19 @@ module.exports = () => {
    **/
   const config = (exports = {});
 
-  config.keys = `pixiviz-${process.env.SAFE_KEY}` ?? '';
+  config.keys = process.env.SAFE_KEY ? `pixiviz-${process.env.SAFE_KEY}` : '';
 
   config.cluster = {
     listen: {
       path: '',
-      port: Number(process.env.PORT) ?? 3000,
+      port: Number(process.env.PORT) || 3000,
     },
   };
 
   config.redis = {
     client: {
       port: 6379,
-      host: 'pixiviz-redis',
+      host: process.env.REDIS_HOST || 'pixiviz-redis',
       db: 1,
       password: process.env.REDIS_PASSWORD,
     },
