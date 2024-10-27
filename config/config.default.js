@@ -83,6 +83,7 @@ module.exports = () => {
   // add your user config here
   const userConfig = {
     appName: 'pixiviz-server',
+    refreshToken: process.env.PIXIV_TOKEN ?? '',
   };
 
   return {
