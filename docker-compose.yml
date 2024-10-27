@@ -5,11 +5,9 @@ services:
     restart: always
     image: bitnami/redis:latest
     container_name: pixiviz-redis
+    hostname: pixiviz-redis
     environment:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
-    networks:
-      - pixiviz-service
-      - pixiviz-tunnel
     volumes:
       - ./redis:/bitnami/redis/data
     healthcheck:
@@ -20,21 +18,18 @@ services:
   cloudflared:
     image: cloudflare/cloudflared:latest
     container_name: pixiviz-tunnel
+    hostname: pixiviz-tunnel
     restart: unless-stopped
-    command: tunnel run
-    environment:
-      - TUNNEL_TOKEN=${TUNNEL_TOKEN}
-    networks:
-      - pixiviz-service
-      - pixiviz-tunnel
+    command: tunnel run ${TUNNEL_TOKEN}
     depends_on:
-      - service
+      - api-service
+    links:
+      - api-service
 
-  service:
+  api-service:
     build: .
-    ports:
-      - "3000:3000"
     container_name: pixiviz-api-service
+    hostname: pixiviz-api-service
     volumes:
       - ./config:/usr/local/pixiviz-api/config
       - ./refreshToken:/usr/local/pixiviz-api/refreshToken
@@ -45,16 +40,13 @@ services:
       - SAFE_KEY=${SAFE_KEY}
     networks:
       - pixiviz-service
-      - pixiviz-tunnel
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/ping"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
-
-networks:
-  pixiviz-service:
-    internal: true
-  pixiviz-tunnel:
-    internal: false
+    depends_on:
+      - redis
+    links:
+      - redis
