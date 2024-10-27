@@ -25,6 +25,7 @@ services:
       - api-service
     networks:
       - pixiviz-service
+      - bridge
 
   api-service:
     build: .
