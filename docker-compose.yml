@@ -20,7 +20,7 @@ services:
     container_name: pixiviz-tunnel
     hostname: pixiviz-tunnel
     restart: unless-stopped
-    command: tunnel run ${TUNNEL_TOKEN}
+    command: tunnel run --token ${TUNNEL_TOKEN}
     depends_on:
       - api-service
     networks:
