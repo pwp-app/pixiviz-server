@@ -42,6 +42,7 @@ services:
       - SAFE_KEY=${SAFE_KEY}
     networks:
       - pixiviz-service
+      - bridge
     healthcheck:
       test: ["CMD", "curl", "-f", "http://pixiviz-api-service:3000/v1/ping"]
       interval: 30s
