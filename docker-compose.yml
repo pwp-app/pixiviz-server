@@ -23,9 +23,6 @@ services:
     command: tunnel run --token ${TUNNEL_TOKEN}
     depends_on:
       - api-service
-    networks:
-      - pixiviz-service
-      - bridge
 
   api-service:
     build: .
@@ -51,9 +48,3 @@ services:
       start_period: 40s
     depends_on:
       - redis
-    links:
-      - redis
-
-networks:
-  pixiviz-service:
-    internal: false
