@@ -72,9 +72,18 @@ class PixivService extends Service {
   async refreshToken(token) {
     const tokenFilePath = process.env.IN_DOCKER ? '/usr/local/pixiviz-api/token/refreshToken' : path.resolve(__dirname, '../../token/refreshToken');
     let storedToken;
-    if (fs.existsSync(tokenFilePath)) {
-      storedToken = fs.readFileSync(tokenFilePath, { encoding: 'utf-8' });
+    try {
+      if (fs.existsSync(tokenFilePath)) {
+        storedToken = fs.readFileSync(tokenFilePath, { encoding: 'utf-8' });
+      }
+    } catch (err) {
+      console.error('Failed to read token file:', {
+        path: tokenFilePath,
+        error: err.message,
+        stack: err.stack,
+      });
     }
+
     try {
       const res = await axios.post(
         'https://oauth.secure.pixiv.net/auth/token',
@@ -98,10 +107,15 @@ class PixivService extends Service {
         fs.writeFileSync(tokenFilePath, auth.refresh_token, { encoding: 'utf-8' });
         this.setAuth(auth);
       } else {
-        throw 'Cannot refresh token.';
+        throw new Error('Token refresh failed: Empty response data');
       }
     } catch (err) {
-      console.error('refreshToken error:', err);
+      console.error('Token refresh failed:', {
+        error: err.message,
+        response: err.response?.data,
+        status: err.response?.status,
+        stack: err.stack,
+      });
       throw err;
     }
   }
@@ -267,13 +281,21 @@ class PixivService extends Service {
         },
       });
       if (!res?.data) {
+        console.warn('Search suggestions returned empty response:', { keyword });
         return null;
       }
       const tags = (res.data.body?.relatedTags || []).filter(tag => !this.ctx.sensitiveWords.verify(tag));
       this.service.redis.set(CACHE_KEY, tags, DATA_LONG_CACHE_TIME);
       return tags;
     } catch (err) {
-      throw err.message;
+      console.error('Failed to fetch search suggestions:', {
+        keyword,
+        error: err.message,
+        response: err.response?.data,
+        status: err.response?.status,
+        stack: err.stack,
+      });
+      throw err;
     }
   }
 }
