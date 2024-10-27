@@ -9,9 +9,12 @@ module.exports = () => {
    **/
   const config = (exports = {});
 
+  config.keys = `pixiviz-${process.env.SAFE_KEY}` ?? '';
+
   config.cluster = {
     listen: {
       path: '',
+      port: Number(process.env.PORT) ?? 7701,
     },
   };
 
@@ -20,6 +23,7 @@ module.exports = () => {
       port: 6379,
       host: 'pixiviz-redis',
       db: 1,
+      password: process.env.REDIS_PASSWORD,
     },
   };
 

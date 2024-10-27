@@ -10,16 +10,16 @@
     "axios": "^0.26.1",
     "cross-env": "^7.0.3",
     "egg": "^2.37.0",
-    "egg-cors": "^2.2.3",
-    "egg-logrotator": "^3.1.0",
-    "egg-redis": "^2.5.0",
+    "egg-cors": "^2.2.4",
+    "egg-logrotator": "^3.2.0",
+    "egg-redis": "^2.6.0",
     "egg-scripts": "^2.17.0",
     "egg-security": "^2.11.0",
     "egg-validate": "^2.0.2",
     "koa-compress": "^5.1.1",
-    "moment": "^2.29.4",
-    "qs": "^6.11.2",
-    "sensitive-word-tool": "^1.1.9"
+    "moment": "^2.30.1",
+    "qs": "^6.13.0",
+    "sensitive-word-tool": "^1.1.10"
   },
   "devDependencies": {
     "autod": "^3.1.2",
