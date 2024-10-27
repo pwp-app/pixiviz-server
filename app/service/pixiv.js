@@ -101,6 +101,7 @@ class PixivService extends Service {
         throw 'Cannot refresh token.';
       }
     } catch (err) {
+      console.error('refreshToken error:', err);
       throw err;
     }
   }
