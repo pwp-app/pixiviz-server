@@ -15,7 +15,7 @@ module.exports = app => {
   const search = controller[api_version].search;
   const ugoira = controller[api_version].ugoira;
 
-  router.get('ping', ping);
+  router.get(getRoute('illust/search'), ping);
 
   router.get(getRoute('illust/search'), illust.search);
   router.get(getRoute('illust/rank'), illust.rank);
