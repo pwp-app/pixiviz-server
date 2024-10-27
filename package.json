@@ -35,7 +35,7 @@
   },
   "scripts": {
     "start": "egg-scripts start --daemon --title=egg-server-pixivc-backend",
-    "start:docker-prod": "cross-env EGG_SERVER_ENV=prod egg-scripts start",
+    "start:docker-prod": "cross-env EGG_SERVER_ENV=prod IN_DOCKER=1 egg-scripts start",
     "start:prod": "cross-env EGG_SERVER_ENV=prod npm start",
     "stop": "egg-scripts stop --title=egg-server-pixivc-backend",
     "dev": "egg-bin dev",

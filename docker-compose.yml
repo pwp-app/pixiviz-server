@@ -32,7 +32,7 @@ services:
     hostname: pixiviz-api-service
     volumes:
       - ./config:/usr/local/pixiviz-api/config
-      - ./refreshToken:/usr/local/pixiviz-api/refreshToken
+      - ./token:/usr/local/pixiviz-api/token
       - ./logs:/usr/local/pixiviz-api/logs
     environment:
       - REDIS_HOST=redis

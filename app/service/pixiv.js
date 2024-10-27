@@ -70,7 +70,7 @@ class PixivService extends Service {
     await this.refreshToken(token);
   }
   async refreshToken(token) {
-    const tokenFilePath = path.resolve(__dirname, '../../refreshToken');
+    const tokenFilePath = process.env.IN_DOCKER ? '/usr/local/pixiviz-api/token/refreshToken' : path.resolve(__dirname, '../../token/refreshToken');
     let storedToken;
     if (fs.existsSync(tokenFilePath)) {
       storedToken = fs.readFileSync(tokenFilePath, { encoding: 'utf-8' });
