@@ -14,7 +14,7 @@ module.exports = () => {
   config.cluster = {
     listen: {
       path: '',
-      port: Number(process.env.PORT) ?? 7701,
+      port: Number(process.env.PORT) ?? 3000,
     },
   };
 

@@ -13,7 +13,7 @@ services:
     volumes:
       - ./redis:/bitnami/redis/data
     healthcheck:
-      test: "redis-cli -a password ping"
+      test: "redis-cli -a ${REDIS_PASSWORD} ping"
       interval: 5s
       retries: 20
 
@@ -45,6 +45,7 @@ services:
       - SAFE_KEY=${SAFE_KEY}
     networks:
       - pixiviz-service
+      - pixiviz-tunnel
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/ping"]
       interval: 30s
@@ -53,7 +54,7 @@ services:
       start_period: 40s
 
 networks:
-  pixiviz-internal:
+  pixiviz-service:
     internal: true
   pixiviz-tunnel:
     internal: false
