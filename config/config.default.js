@@ -34,7 +34,7 @@ module.exports = () => {
     csrf: {
       enable: false,
     },
-    domainWhiteList: ['http://localhost:8000', 'https://pixiviz.pwp.app'],
+    domainWhiteList: ['https://pixiviz.pwp.app', 'https://pixiviz.xyz'],
   };
 
   config.cors = {
